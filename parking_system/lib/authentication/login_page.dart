@@ -145,16 +145,15 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class AuthService {
-  signInWithGoogle() async {
-    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+  Future<UserCredential> signInWithGoogle() async {
+    final GoogleAuthProvider googleProvider = GoogleAuthProvider();
 
-    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+    googleProvider.addScope('email');
+    googleProvider.setCustomParameters({
+      'prompt': 'select_account',
+    });
 
-    final credential = GoogleAuthProvider.credential(
-      accessToken: gAuth.accessToken,
-      idToken: gAuth.idToken,
-    );
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    return await FirebaseAuth.instance.signInWithProvider(googleProvider);
   }
 }
 
